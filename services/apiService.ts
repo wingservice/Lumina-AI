@@ -76,6 +76,9 @@ export const mockBackend = {
           credits: 5,
           isAdmin: fbUser.email === 'admin@lumina.ai'
         };
+        // Persist the missing user metadata
+        users[fbUser.email!] = user;
+        localStorage.setItem(USERS_KEY, JSON.stringify(users));
       }
 
       return user;
@@ -111,6 +114,9 @@ export const mockBackend = {
       return user;
     } catch (error: any) {
       console.error("Google Auth Error:", error);
+      if (error.code === 'auth/unauthorized-domain') {
+        throw new Error("UNAUTHORIZED_DOMAIN");
+      }
       throw new Error("GOOGLE_AUTH_FAILED");
     }
   },
@@ -131,8 +137,7 @@ export const mockBackend = {
 
   getCurrentUser: (): User | null => {
     const fbUser = auth.currentUser;
-    // Only return the user if they are logged in and verified
-    // Note: Google users are usually auto-verified by Firebase
+    // For Google users, emailVerified is true. For email users, we check strictly.
     if (!fbUser || !fbUser.emailVerified) return null;
 
     const usersJson = localStorage.getItem(USERS_KEY);
