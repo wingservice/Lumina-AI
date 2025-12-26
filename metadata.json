@@ -1,0 +1,7 @@
+{
+  "name": "Lumina AI - Pro Image Studio",
+  "description": "A secure, production-grade AI image generation platform powered by Gemini. Features a credit system, image history, and advanced editing capabilities.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
